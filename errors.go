@@ -4,4 +4,5 @@ import "errors"
 
 var (
 	InvalidMSISDN = errors.New("invalid MSISDN")
+	InvalidNSN    = errors.New("invalid NSN")
 )
