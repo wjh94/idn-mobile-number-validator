@@ -1,6 +1,12 @@
 package idn_mobile_number_validator
 
-import "regexp"
+import (
+	"regexp"
+)
+
+const (
+	maxLength = 2
+)
 
 var (
 	regexPhoneNumberE164WithoutPlus = `^628[0-9]\d{7,10}$`
@@ -11,14 +17,21 @@ var (
 
 func ValidateE164(msisdn string, withPlus ...bool) error {
 	matcher := regexPhoneNumberE164WithoutPlus
+	prefixStartIndex := 3
 	if len(withPlus) > 0 && withPlus[0] {
 		matcher = regexPhoneNumberE164WithPlus
+		prefixStartIndex += 1
 	}
 
 	regex := regexp.MustCompile(matcher)
 	matchingNumber := regex.FindAllString(msisdn, -1)
-	if len(matchingNumber) == 0 {
+	if len(matchingNumber) == 0 || len(matchingNumber) != 1 {
 		return InvalidMSISDN
+	}
+
+	prefix := matchingNumber[0][prefixStartIndex : prefixStartIndex+maxLength]
+	if !validPrefixes[prefix] {
+		return InvalidOperatorPrefix
 	}
 
 	return nil
@@ -26,14 +39,21 @@ func ValidateE164(msisdn string, withPlus ...bool) error {
 
 func ValidateNSN(nsn string, withZero ...bool) error {
 	matcher := regexPhoneNumberWithoutZero
+	prefixStartIndex := 1
 	if len(withZero) > 0 && withZero[0] {
 		matcher = regexPhoneNumberWithZero
+		prefixStartIndex += 1
 	}
 
 	regex := regexp.MustCompile(matcher)
 	matchingNumber := regex.FindAllString(nsn, -1)
-	if len(matchingNumber) == 0 {
+	if len(matchingNumber) == 0 || len(matchingNumber) != 1 {
 		return InvalidNSN
+	}
+
+	prefix := matchingNumber[0][prefixStartIndex : prefixStartIndex+maxLength]
+	if !validPrefixes[prefix] {
+		return InvalidOperatorPrefix
 	}
 
 	return nil
