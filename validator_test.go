@@ -33,6 +33,14 @@ func TestValidateE164(t *testing.T) {
 			wantErr: InvalidMSISDN,
 		},
 		{
+			name: "given without plus, when prefix is invalid, then should return an error",
+			args: args{
+				msisdn:   "6282510102020",
+				withPlus: nil,
+			},
+			wantErr: InvalidOperatorPrefix,
+		},
+		{
 			name: "given without plus, when is 11 in length, then should return a nil error",
 			args: args{
 				msisdn:   "62812000001",
@@ -87,6 +95,14 @@ func TestValidateE164(t *testing.T) {
 				withPlus: []bool{true},
 			},
 			wantErr: InvalidMSISDN,
+		},
+		{
+			name: "given without plus, when prefix is invalid, then should return an error",
+			args: args{
+				msisdn:   "+6282510102020",
+				withPlus: []bool{true},
+			},
+			wantErr: InvalidOperatorPrefix,
 		},
 		{
 			name: "given with plus, when is 12 in length, then should return a nil error",
@@ -156,6 +172,14 @@ func TestValidateNSN(t *testing.T) {
 			wantErr: InvalidNSN,
 		},
 		{
+			name: "given without zero, when has invalid prefix, then should return a nil error",
+			args: args{
+				msisdn:   "825000001",
+				withZero: nil,
+			},
+			wantErr: InvalidOperatorPrefix,
+		},
+		{
 			name: "given without zero, when is 9 in length, then should return a nil error",
 			args: args{
 				msisdn:   "812000001",
@@ -210,6 +234,14 @@ func TestValidateNSN(t *testing.T) {
 				withZero: []bool{true},
 			},
 			wantErr: InvalidNSN,
+		},
+		{
+			name: "given without zero, when has invalid prefix, then should return a nil error",
+			args: args{
+				msisdn:   "0825000001",
+				withZero: []bool{true},
+			},
+			wantErr: InvalidOperatorPrefix,
 		},
 		{
 			name: "given with zero, when is 10 in length, then should return a nil error",
