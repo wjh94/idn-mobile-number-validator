@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	maxLength = 2
+	prefixLength = 2
 )
 
 var (
@@ -29,9 +29,13 @@ func ValidateE164(msisdn string, withPlus ...bool) error {
 		return InvalidMSISDN
 	}
 
-	prefix := matchingNumber[0][prefixStartIndex : prefixStartIndex+maxLength]
+	prefix := matchingNumber[0][prefixStartIndex : prefixStartIndex+prefixLength]
+	subscriberNumber := matchingNumber[0][prefixStartIndex+prefixLength:]
 	if !validPrefixes[prefix] {
 		return InvalidOperatorPrefix
+	}
+	if len(subscriberNumber) < minLengthPerPrefix[prefix] || len(subscriberNumber) > maxLengthPerPrefix[prefix] {
+		return InvalidSubscriberNumberLength
 	}
 
 	return nil
@@ -51,9 +55,13 @@ func ValidateNSN(nsn string, withZero ...bool) error {
 		return InvalidNSN
 	}
 
-	prefix := matchingNumber[0][prefixStartIndex : prefixStartIndex+maxLength]
+	prefix := matchingNumber[0][prefixStartIndex : prefixStartIndex+prefixLength]
+	subscriberNumber := matchingNumber[0][prefixStartIndex+prefixLength:]
 	if !validPrefixes[prefix] {
 		return InvalidOperatorPrefix
+	}
+	if len(subscriberNumber) < minLengthPerPrefix[prefix] || len(subscriberNumber) > maxLengthPerPrefix[prefix] {
+		return InvalidSubscriberNumberLength
 	}
 
 	return nil
