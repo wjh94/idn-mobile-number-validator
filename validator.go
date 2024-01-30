@@ -15,6 +15,18 @@ var (
 	regexPhoneNumberWithoutZero     = `^8[0-9]\d{7,10}$`
 )
 
+// ValidateE164 validates if the given msisdn represents a valid format of Indonesian mobile phone number
+// in ITU E.164 format. (Reference: https://www.itu.int/rec/T-REC-E.164-201011-I/en)
+//
+// An optional true boolean can be added if the validation process involves the international calling prefix "+" (plus).
+// Thus, the received msisdn input should start by either "628", or "+628" if the true boolean parameter is added.
+//
+// A nil error will be expected if validation is successful. Otherwise, below error code will be returned:
+//
+//  - InvalidMSISDN: returned if the msisdn does not satisfy the matcher criteria.
+//  - InvalidOperatorPrefix: returned if the msisdn does not contain the valid mobile number prefixes.
+//  - InvalidSubscriberNumberLength: returned if the msisdn does not satisfy valid subscriber number
+//    (digits following prefix) length.
 func ValidateE164(msisdn string, withPlus ...bool) error {
 	matcher := regexPhoneNumberE164WithoutPlus
 	prefixStartIndex := 3
@@ -41,6 +53,18 @@ func ValidateE164(msisdn string, withPlus ...bool) error {
 	return nil
 }
 
+// ValidateNSN validates if the given msisdn represents a valid format of Indonesian mobile phone number
+// as an NSN (national (significant) number). (Reference: https://www.itu.int/rec/T-REC-E.164-201011-I/en)
+//
+// An optional true boolean can be added if the validation process involves the national trunk prefix "0".
+// Thus, the received msisdn input should start by either "8", or "08" if the true boolean parameter is added.
+//
+// A nil error will be expected if validation is successful. Otherwise, below error code will be returned:
+//
+//  - InvalidMSISDN: returned if the msisdn does not satisfy the matcher criteria.
+//  - InvalidOperatorPrefix: returned if the msisdn does not contain the valid mobile number prefixes.
+//  - InvalidSubscriberNumberLength: returned if the msisdn does not satisfy valid subscriber number
+//    (digits following prefix) length.
 func ValidateNSN(nsn string, withZero ...bool) error {
 	matcher := regexPhoneNumberWithoutZero
 	prefixStartIndex := 1
