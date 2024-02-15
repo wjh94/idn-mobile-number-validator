@@ -37,7 +37,7 @@ func main() {
 	if err := mobileNrValidator.ValidateE164(phoneNumber); err != nil {
 		fmt.Println("Phone number failed on validation:", err)
 		return
-    }
+        }
 	
 	fmt.Println("Phone number passed validation")
 }
@@ -67,7 +67,7 @@ func main() {
 	if err := mobileNrValidator.ValidateNSN(phoneNumber); err != nil {
 		fmt.Println("Phone number failed on validation:", err)
 		return
-    }
+        }
 	
 	fmt.Println("Phone number passed validation")
 }
