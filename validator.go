@@ -1,9 +1,5 @@
 package idn_mobile_number_validator
 
-import (
-	"regexp"
-)
-
 const (
 	prefixLength = 2
 )
@@ -28,21 +24,11 @@ var (
 //  - InvalidSubscriberNumberLength: returned if the msisdn does not satisfy valid subscriber number
 //    (digits following prefix) length.
 func ValidateE164(msisdn string, withPlus ...bool) error {
-	matcher := regexPhoneNumberE164WithoutPlus
-	prefixStartIndex := 3
-	if len(withPlus) > 0 && withPlus[0] {
-		matcher = regexPhoneNumberE164WithPlus
-		prefixStartIndex += 1
+	prefix, subscriberNumber, err := extractPrefixAndSubscriberNumberFromE164(msisdn, withPlus...)
+	if err != nil {
+		return err
 	}
 
-	regex := regexp.MustCompile(matcher)
-	matchingNumber := regex.FindAllString(msisdn, -1)
-	if len(matchingNumber) == 0 || len(matchingNumber) != 1 {
-		return InvalidMSISDN
-	}
-
-	prefix := matchingNumber[0][prefixStartIndex : prefixStartIndex+prefixLength]
-	subscriberNumber := matchingNumber[0][prefixStartIndex+prefixLength:]
 	if !validPrefixes[prefix] {
 		return InvalidOperatorPrefix
 	}
@@ -66,21 +52,11 @@ func ValidateE164(msisdn string, withPlus ...bool) error {
 //  - InvalidSubscriberNumberLength: returned if the msisdn does not satisfy valid subscriber number
 //    (digits following prefix) length.
 func ValidateNSN(nsn string, withZero ...bool) error {
-	matcher := regexPhoneNumberWithoutZero
-	prefixStartIndex := 1
-	if len(withZero) > 0 && withZero[0] {
-		matcher = regexPhoneNumberWithZero
-		prefixStartIndex += 1
+	prefix, subscriberNumber, err := extractPrefixAndSubscriberNumberFromNSN(nsn, withZero...)
+	if err != nil {
+		return err
 	}
 
-	regex := regexp.MustCompile(matcher)
-	matchingNumber := regex.FindAllString(nsn, -1)
-	if len(matchingNumber) == 0 || len(matchingNumber) != 1 {
-		return InvalidNSN
-	}
-
-	prefix := matchingNumber[0][prefixStartIndex : prefixStartIndex+prefixLength]
-	subscriberNumber := matchingNumber[0][prefixStartIndex+prefixLength:]
 	if !validPrefixes[prefix] {
 		return InvalidOperatorPrefix
 	}
